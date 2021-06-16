@@ -31,13 +31,13 @@ public:
   //  - the third is the ``type'' as seen by HDF5.
   //  - The final entry is the max size of the buffer. It's only limited
   //    by your machine's memory.
-  OneDimBuffer(H5::CommonFG& group, std::string ds_name,
+  OneDimBuffer(H5::Group& group, std::string ds_name,
 	       H5::DataType type, hsize_t buffer_size = 10);
 
   // Constructor for compound types. We use this to make sure `pack`
   // is called on the on-disk datatype (so we don't save space for
   // bookkeeping info in the memory-resident objets).
-  OneDimBuffer(H5::CommonFG& group, std::string ds_name,
+  OneDimBuffer(H5::Group& group, std::string ds_name,
 	       H5::CompType type, hsize_t buffer_size = 10);
 
   // Disable copy and assignment (for now), not sure what copying will do
@@ -59,7 +59,7 @@ private:
   // Internal constructor. Here we specify an in-memory and on-disk
   // datatype, since (in the case of compound datatypes) we don't
   // always want the same layout.
-  OneDimBuffer(H5::CommonFG& group, std::string ds_name,
+  OneDimBuffer(H5::Group& group, std::string ds_name,
 	       H5::DataType type, H5::DataType disk_type, hsize_t = 10);
 
   // In-memory datatype
@@ -81,14 +81,14 @@ private:
 // Public constructors: thin wrappers on the internal constructor.
 template<typename T>
 OneDimBuffer<T>::OneDimBuffer(
-  H5::CommonFG& group, std::string ds_name,
+  H5::Group& group, std::string ds_name,
   H5::DataType type, hsize_t size):
   OneDimBuffer(group, ds_name, type, type, size)
 {
 }
 template<typename T>
 OneDimBuffer<T>::OneDimBuffer(
-  H5::CommonFG& group, std::string ds_name,
+  H5::Group& group, std::string ds_name,
   H5::CompType type, hsize_t size):
   OneDimBuffer(group, ds_name, type, h5::packed(type), size)
 {
@@ -97,7 +97,7 @@ OneDimBuffer<T>::OneDimBuffer(
 // the private constructor.
 template<typename T>
 OneDimBuffer<T>::OneDimBuffer(
-  H5::CommonFG& group, std::string ds_name,
+  H5::Group& group, std::string ds_name,
   H5::DataType type, H5::DataType disk_type, hsize_t buffer_size):
   _type(type),
   _max_size(buffer_size),
